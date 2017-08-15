@@ -1,0 +1,15 @@
+<component name="org.nuxeo.disney.parks.poc.commandline">
+
+    <require>org.nuxeo.ecm.platform.commandline.executor.service.defaultContrib</require>
+
+    <extension target="org.nuxeo.ecm.platform.commandline.executor.service.CommandLineExecutorComponent"
+               point="command">
+        <command name="mediainfo-info" enabled="true">
+            <commandLine>mediainfo</commandLine>
+            <winCommand>MediaInfo.exe</winCommand>
+            <parameterString>--Language=raw --Full -i #{url}</parameterString>
+            <winParameterString>--Language=raw --Full -i #{url}</winParameterString>
+            <installationDirective>You need to install mediainfo</installationDirective>
+        </command>
+    </extension>
+</component>

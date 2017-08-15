@@ -1,0 +1,13 @@
+<component name="org.nuxeo.disney.parks.poc.listeners">
+
+    <require>org.nuxeo.platform.video.core.listeners</require>
+
+    <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
+        <listener name="videoChangedListener" async="false" postCommit="false"
+                  class="org.nuxeo.labs.video.mediainfo.mapper.CustomVideoChangedListener" priority="20">
+            <event>documentCreated</event>
+            <event>beforeDocumentModification</event>
+        </listener>
+    </extension>
+
+</component>
