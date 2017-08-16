@@ -1,4 +1,4 @@
-<component name="org.nuxeo.disney.parks.poc.commandline">
+<component name="org.nuxeo.labs.video.mediainfo.mapper.commandline">
 
     <require>org.nuxeo.ecm.platform.commandline.executor.service.defaultContrib</require>
 

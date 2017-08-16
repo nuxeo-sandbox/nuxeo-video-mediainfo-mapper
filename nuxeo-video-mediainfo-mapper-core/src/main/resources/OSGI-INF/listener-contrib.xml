@@ -1,4 +1,4 @@
-<component name="org.nuxeo.disney.parks.poc.listeners">
+<component name="org.nuxeo.labs.video.mediainfo.mapper.listeners">
 
     <require>org.nuxeo.platform.video.core.listeners</require>
 
