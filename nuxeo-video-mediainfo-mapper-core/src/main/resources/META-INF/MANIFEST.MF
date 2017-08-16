@@ -7,4 +7,5 @@ Bundle-Name: nuxeo-video-mediainfo-mapper-core
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: nuxeo-video-mediainfo-mapper-core;singleton=true
 Nuxeo-Component: OSGI-INF/listener-contrib.xml,
-    OSGI-INF/commandline-contrib.xml
+    OSGI-INF/commandline-contrib.xml,
+    OSGI-INF/operation-contrib.xml
