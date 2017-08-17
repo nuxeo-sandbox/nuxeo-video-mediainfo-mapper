@@ -125,7 +125,9 @@ public class MediaInfoHelper {
         String singleInfoLine;
         while (subListIterator.hasNext()) {
             singleInfoLine = subListIterator.next();
-            subMap.put(getSingleInfoKey(singleInfoLine), getSingleInfoValue(singleInfoLine));
+            if (singleInfoLine.length() >= 3 && singleInfoLine.indexOf(":")>=1) {
+                subMap.put(getSingleInfoKey(singleInfoLine), getSingleInfoValue(singleInfoLine));
+            }
         }
         return subMap;
     }
