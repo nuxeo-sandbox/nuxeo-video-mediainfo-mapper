@@ -86,23 +86,9 @@ public class VideoInfoWorker extends AbstractWork {
             doc = (DocumentModel) as.run(octx, chain);
             session.saveDocument(doc);
         } catch (OperationException e) {
-            log.warn(e);
+            log.error(e);
+            throw new NuxeoException(e);
         }
-
-
-        /*Map<String, Map<String, String>> mediainfo = MediaInfoHelper.getProcessedMediaInfo(blob);
-
-        Map<String,Serializable> result = new HashMap<>();
-        Map<String,String> generalInfo = mediainfo.get("General");
-        Map<String,String> videoInfo = mediainfo.get("Video");
-
-        result.put("duration",Double.parseDouble(generalInfo.get("Duration"))/1000);
-        result.put("format",generalInfo.get("Format"));
-        result.put("width",Long.parseLong(videoInfo.get("Width")));
-        result.put("height",Long.parseLong(videoInfo.get("Height")));
-        result.put("frameRate",Double.parseDouble(videoInfo.get("FrameRate")));
-
-        doc.setPropertyValue("vid:info", (Serializable) result);*/
     }
 
 }
