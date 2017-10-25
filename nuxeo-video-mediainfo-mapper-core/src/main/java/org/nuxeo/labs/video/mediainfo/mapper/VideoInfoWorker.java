@@ -2,10 +2,11 @@ package org.nuxeo.labs.video.mediainfo.mapper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.core.api.NuxeoException;
+import org.nuxeo.ecm.automation.AutomationService;
+import org.nuxeo.ecm.automation.OperationChain;
+import org.nuxeo.ecm.automation.OperationContext;
+import org.nuxeo.ecm.automation.OperationException;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.model.Property;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventService;
@@ -14,10 +15,6 @@ import org.nuxeo.ecm.core.event.impl.EventContextImpl;
 import org.nuxeo.ecm.core.work.AbstractWork;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.transaction.TransactionHelper;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.nuxeo.ecm.platform.video.VideoConstants.*;
 
@@ -57,7 +54,7 @@ public class VideoInfoWorker extends AbstractWork {
             return;
         }
 
-        updateVideoInfo(doc, video);
+        updateVideoInfo(doc);
 
         doc.setPropertyValue(TRANSCODED_VIDEOS_PROPERTY, null);
         doc.setPropertyValue(STORYBOARD_PROPERTY, null);
@@ -77,8 +74,23 @@ public class VideoInfoWorker extends AbstractWork {
         return "VideoInfoWorker-" + docId;
     }
 
-    public void updateVideoInfo(DocumentModel doc, Blob blob) throws NuxeoException{
-        Map<String, Map<String, String>> mediainfo = MediaInfoHelper.getProcessedMediaInfo(blob);
+    public void updateVideoInfo(DocumentModel doc) throws NuxeoException{
+        CoreSession session = doc.getCoreSession();
+        AutomationService as = Framework.getService(AutomationService.class);
+        OperationContext octx = new OperationContext();
+        octx.setInput(doc);
+        octx.setCoreSession(session);
+        OperationChain chain = new OperationChain("MediaInfoMappingWorker");
+        chain.add("javascript.MediaInfoMapping");
+        try {
+            doc = (DocumentModel) as.run(octx, chain);
+            session.saveDocument(doc);
+        } catch (OperationException e) {
+            log.warn(e);
+        }
+
+
+        /*Map<String, Map<String, String>> mediainfo = MediaInfoHelper.getProcessedMediaInfo(blob);
 
         Map<String,Serializable> result = new HashMap<>();
         Map<String,String> generalInfo = mediainfo.get("General");
@@ -90,7 +102,7 @@ public class VideoInfoWorker extends AbstractWork {
         result.put("height",Long.parseLong(videoInfo.get("Height")));
         result.put("frameRate",Double.parseDouble(videoInfo.get("FrameRate")));
 
-        doc.setPropertyValue("vid:info", (Serializable) result);
+        doc.setPropertyValue("vid:info", (Serializable) result);*/
     }
 
 }

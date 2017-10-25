@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.vision.core.chains">
+    <extension target="org.nuxeo.automation.scripting.internals.AutomationScriptingComponent" point="operation">
+        <scriptedOperation id="javascript.MediaInfoMapping">
+            <inputType>Document</inputType>
+            <outputType>Document</outputType>
+            <category>javascript</category>
+            <description></description>
+            <script><![CDATA[function run(input, params) {
+              Console.log('enter');
+
+              var blob = input['file:content'];
+
+              Console.log('blob'+blob);
+
+              blob = Blob.ExtractMediaMetadata(blob, {
+                'outputVariable': 'metadata'
+              });
+
+              var metadata = ctx.metadata;
+              Console.log('metadata:'+metadata);
+
+              var generalInfo = metadata.General;
+              var videoInfo = metadata.Video;
+
+              var result = {};
+              result.duration = generalInfo.Duration/1000;
+              result.format = generalInfo.Format;
+              result.width = videoInfo.Width;
+              result.height = videoInfo.Height;
+              result.frameRate = videoInfo.FrameRate;
+
+              Console.log('Result:'+result);
+
+              input["vid:info"] = result;
+
+              return input;
+        }]]></script>
+        </scriptedOperation>
+    </extension>
+</component>
