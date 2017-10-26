@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<component name="org.nuxeo.vision.core.chains">
+<component name="org.nuxeo.labs.video.mediainfo.mapper.chains">
     <extension target="org.nuxeo.automation.scripting.internals.AutomationScriptingComponent" point="operation">
         <scriptedOperation id="javascript.MediaInfoMapping">
             <inputType>Document</inputType>
