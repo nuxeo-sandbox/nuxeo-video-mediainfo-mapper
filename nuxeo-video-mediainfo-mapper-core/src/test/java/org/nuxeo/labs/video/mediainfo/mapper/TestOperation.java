@@ -27,7 +27,12 @@ import java.util.Map;
 @RunWith(FeaturesRunner.class)
 @Features(AutomationFeature.class)
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
-@Deploy({ "nuxeo-video-mediainfo-mapper-core", "org.nuxeo.ecm.platform.video.core"})
+@Deploy({
+        "nuxeo-video-mediainfo-mapper-core",
+        "org.nuxeo.ecm.platform.tag",
+        "org.nuxeo.ecm.platform.video.api",
+        "org.nuxeo.ecm.platform.video.core"
+})
 public class TestOperation {
 
     @Inject
