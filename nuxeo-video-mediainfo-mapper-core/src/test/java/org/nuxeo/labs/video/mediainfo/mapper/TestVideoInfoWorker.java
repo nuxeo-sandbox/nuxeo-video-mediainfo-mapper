@@ -21,7 +21,6 @@ package org.nuxeo.labs.video.mediainfo.mapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -36,7 +35,6 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -55,7 +53,7 @@ public class TestVideoInfoWorker {
     CoreSession session;
 
     @Test
-    public void testWorker() throws IOException, OperationException {
+    public void testWorker() {
         File file = new File(getClass().getResource("/files/nuxeo.3gp").getPath());
         Blob blob = new FileBlob(file);
 
@@ -67,11 +65,7 @@ public class TestVideoInfoWorker {
         worker.updateVideoInfo(doc);
         Map<String,Serializable> videoInfo = (Map<String, Serializable>) doc.getPropertyValue("video:info");
         Assert.assertNotNull(videoInfo);
-        Assert.assertEquals(622.34d,videoInfo.get("duration"));
-        Assert.assertEquals(176l,videoInfo.get("width"));
-        Assert.assertEquals(144l,videoInfo.get("height"));
-        Assert.assertEquals("MPEG-4",videoInfo.get("format"));
-        Assert.assertEquals(9.871d,videoInfo.get("frameRate"));
+        Assert.assertTrue(VideoInfoTestHelper.isVideoInfoCorrect(videoInfo));
     }
 
 }

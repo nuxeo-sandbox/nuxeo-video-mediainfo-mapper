@@ -16,7 +16,7 @@ import org.nuxeo.ecm.core.work.AbstractWork;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.transaction.TransactionHelper;
 
-import static org.nuxeo.ecm.platform.video.VideoConstants.*;
+import static org.nuxeo.ecm.platform.video.VideoConstants.VIDEO_CHANGED_EVENT;
 
 public class VideoInfoWorker extends AbstractWork {
 
@@ -55,10 +55,6 @@ public class VideoInfoWorker extends AbstractWork {
         }
 
         updateVideoInfo(doc);
-
-        doc.setPropertyValue(TRANSCODED_VIDEOS_PROPERTY, null);
-        doc.setPropertyValue(STORYBOARD_PROPERTY, null);
-
         session.saveDocument(doc);
 
         EventContextImpl evctx = new DocumentEventContext(session, session.getPrincipal(), doc);
