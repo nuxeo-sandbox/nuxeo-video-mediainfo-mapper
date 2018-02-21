@@ -37,6 +37,7 @@ public class CustomVideoChangedListener implements EventListener {
                 Blob video = (Blob) origVideoProperty.getValue();
 
                 if (BEFORE_DOC_UPDATE.equals(event.getName())) {
+                    doc.setPropertyValue(INFO_PROPERTY,null);
                     doc.setPropertyValue(TRANSCODED_VIDEOS_PROPERTY, null);
                     doc.setPropertyValue(STORYBOARD_PROPERTY, null);
                     doc.setPropertyValue(PICTURE_VIEWS_PROPERTY, null);
