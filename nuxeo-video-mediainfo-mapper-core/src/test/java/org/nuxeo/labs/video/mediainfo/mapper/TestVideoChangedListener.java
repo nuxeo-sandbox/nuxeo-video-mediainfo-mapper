@@ -18,9 +18,9 @@
  */
 package org.nuxeo.labs.video.mediainfo.mapper;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -30,14 +30,16 @@ import org.nuxeo.ecm.core.event.EventService;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
+import org.nuxeo.ecm.core.work.api.WorkManager;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(FeaturesRunner.class)
 @Features(AutomationFeature.class)
@@ -56,8 +58,11 @@ public class TestVideoChangedListener {
     @Inject
     protected EventService eventService;
 
+    @Inject
+    protected WorkManager workManager;
+
     @Test
-    public void testListener() throws IOException, OperationException {
+    public void testListener() throws InterruptedException {
         File file = new File(getClass().getResource("/files/nuxeo.3gp").getPath());
         Blob blob = new FileBlob(file);
 
@@ -67,6 +72,13 @@ public class TestVideoChangedListener {
         session.save();
 
         eventService.waitForAsyncCompletion();
+        workManager.awaitCompletion(60, TimeUnit.SECONDS);
+
+        doc = session.getDocument(doc.getRef());
+
+        Map<String,Serializable> videoInfo = (Map<String, Serializable>) doc.getPropertyValue("video:info");
+        Assert.assertNotNull(videoInfo);
+        //Assert.assertTrue(VideoInfoTestHelper.isVideoInfoCorrect(videoInfo));
     }
 
 }
