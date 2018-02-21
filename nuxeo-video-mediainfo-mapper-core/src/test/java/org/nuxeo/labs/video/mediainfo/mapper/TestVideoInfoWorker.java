@@ -38,6 +38,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Map;
 
+import static org.nuxeo.ecm.platform.video.VideoConstants.INFO_PROPERTY;
+
 @RunWith(FeaturesRunner.class)
 @Features(AutomationFeature.class)
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
@@ -63,7 +65,7 @@ public class TestVideoInfoWorker {
 
         VideoInfoWorker worker = new VideoInfoWorker(session.getRepositoryName(),doc.getId());
         worker.updateVideoInfo(doc);
-        Map<String,Serializable> videoInfo = (Map<String, Serializable>) doc.getPropertyValue("video:info");
+        Map<String,Serializable> videoInfo = (Map<String, Serializable>) doc.getPropertyValue(INFO_PROPERTY);
         Assert.assertNotNull(videoInfo);
         Assert.assertTrue(VideoInfoTestHelper.isVideoInfoCorrect(videoInfo));
     }

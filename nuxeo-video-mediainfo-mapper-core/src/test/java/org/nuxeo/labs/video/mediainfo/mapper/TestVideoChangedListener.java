@@ -41,6 +41,8 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static org.nuxeo.ecm.platform.video.VideoConstants.INFO_PROPERTY;
+
 @RunWith(FeaturesRunner.class)
 @Features(AutomationFeature.class)
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
@@ -76,7 +78,7 @@ public class TestVideoChangedListener {
 
         doc = session.getDocument(doc.getRef());
 
-        Map<String,Serializable> videoInfo = (Map<String, Serializable>) doc.getPropertyValue("video:info");
+        Map<String,Serializable> videoInfo = (Map<String, Serializable>) doc.getPropertyValue(INFO_PROPERTY);
         Assert.assertNotNull(videoInfo);
         //Assert.assertTrue(VideoInfoTestHelper.isVideoInfoCorrect(videoInfo));
     }
