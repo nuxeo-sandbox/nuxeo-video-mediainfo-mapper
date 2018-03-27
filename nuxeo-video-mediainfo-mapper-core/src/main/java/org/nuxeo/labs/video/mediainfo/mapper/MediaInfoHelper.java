@@ -73,9 +73,10 @@ public class MediaInfoHelper {
             }
         }
 
+        File file = null;
         if (uriStr == null) {
             try {
-                File file = File.createTempFile("mediainfo", "." + FilenameUtils.getExtension(blob.getDigest()));
+                file = File.createTempFile("mediainfo", "." + FilenameUtils.getExtension(blob.getDigest()));
                 blob.transferTo(file);
                 uriStr = file.getAbsolutePath();
             } catch (IOException e) {
@@ -90,6 +91,10 @@ public class MediaInfoHelper {
             return cleService.execCommand(MEDIAINFO_INFO_COMMAND_LINE, params).getOutput();
         } catch (CommandNotAvailable e) {
             throw new NuxeoException(e);
+        } finally {
+            if (file != null) {
+                file.delete();
+            }
         }
     }
 
