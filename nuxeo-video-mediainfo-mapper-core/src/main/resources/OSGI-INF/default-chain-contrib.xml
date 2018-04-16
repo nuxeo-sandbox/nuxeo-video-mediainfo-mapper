@@ -30,6 +30,21 @@
               result.height = videoInfo.Height;
               result.frameRate = videoInfo.FrameRate;
 
+              var streams = [];
+              streams.push({
+                type:'Video',
+                codec: result.format
+              });
+
+              if(metadata.Audio) {
+                streams.push({
+                  type:'Audio',
+                  codec: metadata.Audio.Format
+                });
+              }
+
+              result.streams = streams;
+
               Console.log('Result:'+result);
 
               input["vid:info"] = result;
