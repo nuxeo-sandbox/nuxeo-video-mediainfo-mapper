@@ -75,7 +75,7 @@ public class MediaInfoHelper {
 
         if (uriStr == null) {
             try {
-                File file = File.createTempFile("mediainfo", "." + FilenameUtils.getExtension(blob.getDigest()));
+                File file = Framework.createTempFile("mediainfo", "." + FilenameUtils.getExtension(blob.getFilename()));
                 blob.transferTo(file);
                 uriStr = file.getAbsolutePath();
             } catch (IOException e) {
