@@ -8,15 +8,15 @@ import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.model.Property;
+import org.nuxeo.ecm.core.event.Event;
+import org.nuxeo.ecm.core.event.EventService;
+import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
+import org.nuxeo.ecm.core.event.impl.EventContextImpl;
 import org.nuxeo.ecm.core.work.AbstractWork;
-import org.nuxeo.ecm.core.work.api.WorkManager;
-import org.nuxeo.ecm.platform.video.service.VideoService;
-import org.nuxeo.ecm.platform.video.service.VideoStoryboardWork;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.transaction.TransactionHelper;
 
-import static org.nuxeo.ecm.platform.video.VideoConstants.HAS_STORYBOARD_FACET;
-import static org.nuxeo.ecm.platform.video.VideoConstants.HAS_VIDEO_PREVIEW_FACET;
+import static org.nuxeo.ecm.platform.video.VideoConstants.VIDEO_CHANGED_EVENT;
 
 public class VideoInfoWorker extends AbstractWork {
 
@@ -57,18 +57,10 @@ public class VideoInfoWorker extends AbstractWork {
         updateVideoInfo(doc);
         session.saveDocument(doc);
 
-        if (doc.hasFacet(HAS_VIDEO_PREVIEW_FACET) && doc.hasFacet(HAS_STORYBOARD_FACET)) {
-            // schedule storyboard work
-            WorkManager workManager = Framework.getService(WorkManager.class);
-            VideoStoryboardWork work = new VideoStoryboardWork(doc.getRepositoryName(), doc.getId());
-            log.debug(String.format("Scheduling work: storyboard of Video document %s.", doc));
-            workManager.schedule(work, true);
-        }
-
-        // schedule conversion work
-        VideoService videoService = Framework.getService(VideoService.class);
-        log.debug(String.format("Launching automatic conversions of Video document %s.", doc));
-        videoService.launchAutomaticConversions(doc);
+        EventContextImpl evctx = new DocumentEventContext(session, session.getPrincipal(), doc);
+        Event eventToSend = evctx.newEvent(VIDEO_CHANGED_EVENT);
+        EventService eventService = Framework.getLocalService(EventService.class);
+        eventService.fireEvent(eventToSend);
 
         setStatus("Done");
     }
