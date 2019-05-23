@@ -1,10 +1,10 @@
 <!-- See documentation at http://doc.nuxeo.com/x/HgIz -->
 <package type="addon" name="nuxeo-video-mediainfo-mapper" version="@VERSION@">
-  <title>Nuxeo video mediainfo mapper</title>
+  <title>Nuxeo Mediainfo Video Metadata Mapper</title>
   <description>
-    <p>Put here an HTML description of your Nuxeo Package.</p>
+    <p>This plugin uses mediainfo to map video file metadata to document metadata in the Nuxeo Platform</p>
   </description>
-  <!-- <home-page>http://doc.nuxeo.com/</home-page> -->
+  <home-page>https://github.com/nuxeo-sandbox/nuxeo-video-mediainfo-mapper</home-page>
   <vendor></vendor>
   <installer restart="true" />
   <uninstaller restart="true" />
@@ -38,5 +38,5 @@
   <license>Apache License, Version 2.0</license>
   <license-url>http://www.apache.org/licenses/LICENSE-2.0</license-url>
   <!-- Visibility: PRIVATE | MARKETPLACE | DEV | PUBLIC -->
-  <visibility>DEV</visibility>
+  <visibility>PUBLIC</visibility>
 </package>
