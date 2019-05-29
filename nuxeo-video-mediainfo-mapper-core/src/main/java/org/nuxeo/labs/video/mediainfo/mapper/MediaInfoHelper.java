@@ -106,6 +106,11 @@ public class MediaInfoHelper {
         List<String> remainingList = input;
         List<String> subList;
 
+        //workaround for "HTTP server doesn't seem to support byte ranges. Cannot resume." error
+        if (remainingList.get(0).startsWith("E:")) {
+            remainingList.remove(0);
+        }
+
         while (nextIndex != -1 && !remainingList.get(0).equals("")) {
             subList = remainingList.subList(1, nextIndex);
             output.put(remainingList.get(0), processSubList(subList));
