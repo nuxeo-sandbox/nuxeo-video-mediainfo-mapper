@@ -108,7 +108,7 @@ public class MediaInfoHelper {
 
         //workaround for "HTTP server doesn't seem to support byte ranges. Cannot resume." error
         if (remainingList.get(0).startsWith("E:")) {
-            remainingList.remove(0);
+            remainingList.set(0,"General");
         }
 
         while (nextIndex != -1 && !remainingList.get(0).equals("")) {
