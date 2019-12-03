@@ -1,5 +1,25 @@
+/*
+ * (C) Copyright 2018 Nuxeo SA (http://nuxeo.com/) and others.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Contributors:
+ *     Frédéric Vadon
+ *     Thibaud Arguillere
+ */
 package org.nuxeo.labs.video.mediainfo.mapper;
 
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +75,27 @@ public class TestOperation {
         Map<String, Map<String, String>> info = (Map<String, Map<String, String>>) ctx.get("myVariable");
         Assert.assertNotNull(info);
         Assert.assertTrue(info.size()>0);
+    }
+
+    @Test
+    public void testOperationJson() throws Exception {
+
+        File file = new File(getClass().getResource("/files/nuxeo.3gp").getPath());
+        Blob blob = new FileBlob(file);
+
+        AutomationService as = Framework.getService(AutomationService.class);
+        OperationContext ctx = new OperationContext();
+        ctx.setInput(blob);
+        ctx.setCoreSession(session);
+        OperationChain chain = new OperationChain("TestMediaInfoOp");
+        chain.add(MediaInfoOp.ID).set("outputVariableJsonStr", "myVariable");
+        blob = (Blob) as.run(ctx, chain);
+
+        String info = (String) ctx.get("myVariable");
+        Assert.assertNotNull(info);
+        // Converting to JSON must not fail
+        JSONObject obj = new JSONObject(info);
+        Assert.assertTrue(info.length()>0);
     }
 }
 
