@@ -7,8 +7,8 @@
         <command name="mediainfo-info" enabled="true">
             <commandLine>mediainfo</commandLine>
             <winCommand>MediaInfo.exe</winCommand>
-            <parameterString>--Language=raw --Full -i #{url}</parameterString>
-            <winParameterString>--Language=raw --Full -i #{url}</winParameterString>
+            <parameterString>--Language=raw --Output=JSON --Full -i #{url}</parameterString>
+            <winParameterString>--Language=raw --Output=JSON --Full -i #{url}</winParameterString>
             <installationDirective>You need to install mediainfo</installationDirective>
         </command>
     </extension>

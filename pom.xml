@@ -2,14 +2,14 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.nuxeo.ecm.distribution</groupId>
-    <artifactId>nuxeo-distribution</artifactId>
-    <version>10.10</version>
+    <groupId>org.nuxeo</groupId>
+    <artifactId>nuxeo-parent</artifactId>
+    <version>11.4</version>
   </parent>
 
   <groupId>org.nuxeo.labs.video.mediainfo.mapper</groupId>
   <artifactId>nuxeo-video-mediainfo-mapper-parent</artifactId>
-  <version>10.10-SNAPSHOT</version>
+  <version>11.0.0-SNAPSHOT</version>
   <name>Nuxeo video mediainfo mapper parent</name>
   <description/>
   <packaging>pom</packaging>
@@ -20,7 +20,8 @@
   </modules>
 
   <properties>
-    <nuxeo.dam.nxr.version>6.4.3</nuxeo.dam.nxr.version>
+    <nuxeo.target.version>11.*</nuxeo.target.version>
+    <nuxeo.skip.enforcer>true</nuxeo.skip.enforcer>
   </properties>
 
   <repositories>

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2018 Nuxeo SA (http://nuxeo.com/) and others.
+ * (C) Copyright 2020 Nuxeo (http://nuxeo.com/) and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,15 @@
  * Contributors:
  *     Frédéric Vadon
  *     Thibaud Arguillere
+ *     Michael Vachette
  */
  package org.nuxeo.labs.video.mediainfo.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
@@ -28,11 +32,14 @@ import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.NuxeoException;
 
 import java.util.Map;
 
-@Operation(id = MediaInfoOp.ID, category = Constants.CAT_BLOB, label = "Extract Metadata using Media Info", description = "Extract the media file metadata using Media Info and store those in a context variable. If outputVariableJsonStr is passed, the JSON string of the result is stored in this variable.")
+@Operation(
+        id = MediaInfoOp.ID,
+        category = Constants.CAT_BLOB,
+        label = "Extract Metadata using Media Info",
+        description = "Extract the media file metadata using Media Info and store those in a context variable. ")
 public class MediaInfoOp {
 
     public static final String ID = "Blob.ExtractMediaMetadata";
@@ -47,21 +54,16 @@ public class MediaInfoOp {
     protected String outputVariableJsonStr;
 
     @OperationMethod
-    public Blob run(Blob blob) {
-
-        if (StringUtils.isBlank(outputVariable) && StringUtils.isBlank(outputVariableJsonStr)) {
-            throw new NuxeoException("At least one parameter must be passed");
-        }
-
-        Map<String, Map<String, String>> info = MediaInfoHelper.getProcessedMediaInfo(blob);
+    public Blob run(Blob blob) throws JsonProcessingException {
+        JsonNode info = MediaInfoHelper.getProcessedMediaInfo(blob);
         if (StringUtils.isNotBlank(outputVariable)) {
-            ctx.put(outputVariable, info);
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> result = mapper.convertValue(info, new TypeReference<>(){});
+            ctx.put(outputVariable, result);
         }
-
         if (StringUtils.isNotBlank(outputVariableJsonStr)) {
-            ctx.put(outputVariableJsonStr, new JSONObject(info).toString());
+            ctx.put(outputVariableJsonStr, info.toString());
         }
-
         return blob;
     }
 }

@@ -7,7 +7,6 @@
             <category>javascript</category>
             <description></description>
             <script><![CDATA[function run(input, params) {
-              Console.log('enter');
 
               var blob = input['file:content'];
 
@@ -18,13 +17,13 @@
               });
 
               var metadata = ctx.metadata;
-              Console.log('metadata:'+metadata);
+              Console.warn('metadata:'+metadata);
 
-              var generalInfo = metadata.General;
-              var videoInfo = metadata.Video;
+              var generalInfo = findObjectByKey(metadata.media.track,"@type","General");
+              var videoInfo = findObjectByKey(metadata.media.track,"@type","Video");
 
               var result = {};
-              result.duration = generalInfo.Duration/1000;
+              result.duration = generalInfo.Duration;
               result.format = generalInfo.Format;
               result.width = videoInfo.Width;
               result.height = videoInfo.Height;
@@ -50,7 +49,17 @@
               input["vid:info"] = result;
 
               return input;
-        }]]></script>
+        }
+
+        function findObjectByKey(array, key, value) {
+            for (var i = 0; i < array.length; i++) {
+                if (array[i][key] === value) {
+                    return array[i];
+                }
+            }
+            return null;
+        }
+        ]]></script>
         </scriptedOperation>
     </extension>
 </component>

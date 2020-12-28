@@ -16,10 +16,13 @@
  * Contributors:
  *     Frédéric Vadon
  *     Thibaud Arguillere
+ *     Michael Vachette
  */
 package org.nuxeo.labs.video.mediainfo.mapper;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +44,6 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 @RunWith(FeaturesRunner.class)
@@ -50,8 +52,7 @@ import java.util.Map;
 @Deploy({
         "nuxeo-video-mediainfo-mapper-core",
         "org.nuxeo.ecm.platform.tag",
-        "org.nuxeo.ecm.platform.video.api",
-        "org.nuxeo.ecm.platform.video.core"
+        "org.nuxeo.ecm.platform.video"
 })
 public class TestOperation {
 
@@ -59,7 +60,7 @@ public class TestOperation {
     CoreSession session;
 
     @Test
-    public void testOperation() throws IOException, OperationException {
+    public void testOperation() throws OperationException, JsonProcessingException {
 
         File file = new File(getClass().getResource("/files/nuxeo.3gp").getPath());
         Blob blob = new FileBlob(file);
@@ -70,32 +71,18 @@ public class TestOperation {
         ctx.setCoreSession(session);
         OperationChain chain = new OperationChain("TestMediaInfoOp");
         chain.add(MediaInfoOp.ID).set("outputVariable", "myVariable");
-        blob = (Blob) as.run(ctx, chain);
+        chain.add(MediaInfoOp.ID).set("outputVariableJsonStr", "myVariableJSONstring");
+        as.run(ctx, chain);
 
-        Map<String, Map<String, String>> info = (Map<String, Map<String, String>>) ctx.get("myVariable");
+        Map<String,Object> info = (Map<String, Object>) ctx.get("myVariable");
         Assert.assertNotNull(info);
-        Assert.assertTrue(info.size()>0);
-    }
+        Assert.assertTrue(info.size() > 0);
 
-    @Test
-    public void testOperationJson() throws Exception {
-
-        File file = new File(getClass().getResource("/files/nuxeo.3gp").getPath());
-        Blob blob = new FileBlob(file);
-
-        AutomationService as = Framework.getService(AutomationService.class);
-        OperationContext ctx = new OperationContext();
-        ctx.setInput(blob);
-        ctx.setCoreSession(session);
-        OperationChain chain = new OperationChain("TestMediaInfoOp");
-        chain.add(MediaInfoOp.ID).set("outputVariableJsonStr", "myVariable");
-        blob = (Blob) as.run(ctx, chain);
-
-        String info = (String) ctx.get("myVariable");
-        Assert.assertNotNull(info);
-        // Converting to JSON must not fail
-        JSONObject obj = new JSONObject(info);
-        Assert.assertTrue(info.length()>0);
+        String infoStr = (String) ctx.get("myVariableJSONstring");
+        Assert.assertNotNull(infoStr);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode node = objectMapper.readTree(infoStr);
+        Assert.assertTrue(node.size()>0);
     }
 }
 
