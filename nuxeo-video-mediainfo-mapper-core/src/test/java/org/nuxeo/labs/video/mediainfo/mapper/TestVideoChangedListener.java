@@ -26,31 +26,28 @@ import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
-import org.nuxeo.ecm.core.event.EventService;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
-import org.nuxeo.ecm.core.work.api.WorkManager;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
+import org.nuxeo.runtime.test.runner.TransactionalFeature;
 
 import javax.inject.Inject;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static org.nuxeo.ecm.platform.video.VideoConstants.INFO_PROPERTY;
 
 @RunWith(FeaturesRunner.class)
-@Features(AutomationFeature.class)
+@Features({AutomationFeature.class, TransactionalFeature.class})
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
 @Deploy({
         "nuxeo-video-mediainfo-mapper-core",
         "org.nuxeo.ecm.platform.tag",
-        "org.nuxeo.ecm.platform.video.api",
-        "org.nuxeo.ecm.platform.video.core"
+        "org.nuxeo.ecm.platform.video"
 })
 public class TestVideoChangedListener {
 
@@ -58,13 +55,10 @@ public class TestVideoChangedListener {
     CoreSession session;
 
     @Inject
-    protected EventService eventService;
-
-    @Inject
-    protected WorkManager workManager;
+    protected TransactionalFeature transactionalFeature;
 
     @Test
-    public void testListener() throws InterruptedException {
+    public void testListener() {
         File file = new File(getClass().getResource("/files/nuxeo.3gp").getPath());
         Blob blob = new FileBlob(file);
 
@@ -73,14 +67,17 @@ public class TestVideoChangedListener {
         doc = session.createDocument(doc);
         session.save();
 
-        eventService.waitForAsyncCompletion();
-        workManager.awaitCompletion(60, TimeUnit.SECONDS);
+        transactionalFeature.nextTransaction();
 
         doc = session.getDocument(doc.getRef());
 
         Map<String,Serializable> videoInfo = (Map<String, Serializable>) doc.getPropertyValue(INFO_PROPERTY);
         Assert.assertNotNull(videoInfo);
-        //Assert.assertTrue(VideoInfoTestHelper.isVideoInfoCorrect(videoInfo));
+        Assert.assertEquals(622.34d,(double)videoInfo.get("duration"),0.1d);
+        Assert.assertEquals(176,(long)videoInfo.get("width"));
+        Assert.assertEquals(144,(long)videoInfo.get("height"));
+        Assert.assertEquals("MPEG-4",videoInfo.get("format"));
+        Assert.assertEquals(9.871d,(double)videoInfo.get("frameRate"),0.1d);
     }
 
 }
