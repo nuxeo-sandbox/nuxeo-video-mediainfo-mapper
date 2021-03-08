@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.nuxeo.labs.video.mediainfo.mapper</groupId>
     <artifactId>nuxeo-video-mediainfo-mapper-parent</artifactId>
-    <version>11.0.0-SNAPSHOT</version>
+    <version>2021.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>nuxeo-video-mediainfo-mapper-core</artifactId>
   <name>Nuxeo video mediainfo mapper core</name>
