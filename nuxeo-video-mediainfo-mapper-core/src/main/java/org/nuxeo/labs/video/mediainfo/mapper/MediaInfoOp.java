@@ -47,23 +47,13 @@ public class MediaInfoOp {
     @Context
     protected OperationContext ctx;
 
-    @Param(name = "outputVariable", required = false)
-    protected String outputVariable;
-
-    @Param(name = "outputVariableJsonStr", required = false)
+    @Param(name = "outputVariableJsonStr", required = true)
     protected String outputVariableJsonStr;
 
     @OperationMethod
     public Blob run(Blob blob) throws JsonProcessingException {
         JsonNode info = MediaInfoHelper.getProcessedMediaInfo(blob);
-        if (StringUtils.isNotBlank(outputVariable)) {
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, Object> result = mapper.convertValue(info, new TypeReference<>(){});
-            ctx.put(outputVariable, result);
-        }
-        if (StringUtils.isNotBlank(outputVariableJsonStr)) {
-            ctx.put(outputVariableJsonStr, info.toString());
-        }
+        ctx.put(outputVariableJsonStr, info.toString());
         return blob;
     }
 }

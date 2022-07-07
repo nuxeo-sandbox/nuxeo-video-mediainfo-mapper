@@ -70,13 +70,8 @@ public class TestOperation {
         ctx.setInput(blob);
         ctx.setCoreSession(session);
         OperationChain chain = new OperationChain("TestMediaInfoOp");
-        chain.add(MediaInfoOp.ID).set("outputVariable", "myVariable");
         chain.add(MediaInfoOp.ID).set("outputVariableJsonStr", "myVariableJSONstring");
         as.run(ctx, chain);
-
-        Map<String,Object> info = (Map<String, Object>) ctx.get("myVariable");
-        Assert.assertNotNull(info);
-        Assert.assertTrue(info.size() > 0);
 
         String infoStr = (String) ctx.get("myVariableJSONstring");
         Assert.assertNotNull(infoStr);

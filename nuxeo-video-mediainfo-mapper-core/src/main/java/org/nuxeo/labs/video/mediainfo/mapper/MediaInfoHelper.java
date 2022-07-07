@@ -87,11 +87,8 @@ public class MediaInfoHelper {
     }
 
     public static JsonNode processMediaInfo(List<String> input) throws JsonProcessingException {
-        int start = input.indexOf("{");
-        int end = input.lastIndexOf("}");
-        String usefulInput = String.join("",input.subList(start,end+1));
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readTree(usefulInput);
+        return objectMapper.readTree(String.join("",input));
     }
 
 }

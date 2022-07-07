@@ -13,11 +13,14 @@
               Console.log('blob'+blob);
 
               blob = Blob.ExtractMediaMetadata(blob, {
-                'outputVariable': 'metadata'
+                'outputVariableJsonStr': 'metadata'
               });
 
-              var metadata = ctx.metadata;
-              Console.warn('metadata:'+metadata);
+              Console.warn('metadata:'+ctx.metadata);
+              var metadata = JSON.parse(ctx.metadata);
+
+              //metadata is an array
+              metadata = metadata[1];
 
               var generalInfo = findObjectByKey(metadata.media.track,"@type","General");
               var videoInfo = findObjectByKey(metadata.media.track,"@type","Video");
