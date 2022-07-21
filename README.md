@@ -1,17 +1,13 @@
 ## Description
 This plugin provides a listener and async workers to extract binary metadata from video files using mediainfo.
 
-[![Build Status](https://qa.nuxeo.org/jenkins/buildStatus/icon?job=Sandbox/sandbox_nuxeo-video-mediainfo-mapper-master)](https://qa.nuxeo.org/jenkins/job/Sandbox/sandbox_nuxeo-video-mediainfo-mapper-master)
-
 ## Using the Plugin
 
 The mapping between fields extracted from `mediainfo` is done in an asynchronous worker, using a JavaScript automation callback, named `javascript.MediaInfoMapping` (can be overridden).
 
-It uses an operation provided by the plugin: `Blob.ExtractMediaMetadata`. This operation receives a blob as input and accepts 2 optional parameters: `outputVariable` and `outputVariableJsonStr`.  Both are strings, and the names of the context variable in which the result will be saved. You can pass one or the other.
+It uses an operation provided by the plugin: `Blob.ExtractMediaMetadata`. This operation receives a blob as input and takes a parameter `outputVariableJsonStr`, the name of the context variable in which the result will be saved. 
 
-`outputVariable` receives a Java `Map`. `outputVariableJsonStr`  receives the same, as a JSON string.
-
-
+`outputVariableJsonStr`  receives a JSON encoded string.
 
 ## How to build
 ```
